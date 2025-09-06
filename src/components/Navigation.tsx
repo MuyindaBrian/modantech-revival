@@ -1,8 +1,16 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sun, Moon } from "lucide-react";
+import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Link } from "react-router-dom";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -32,15 +40,63 @@ const Navigation = () => {
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                to={item.href}
-                className="text-foreground hover:text-primary transition-colors duration-200 font-medium"
-              >
-                {item.name}
-              </Link>
-            ))}
+            <NavigationMenu>
+              <NavigationMenuList>
+                <NavigationMenuItem>
+                  <Link to="/" className="text-foreground hover:text-primary transition-colors duration-200 font-medium px-4 py-2">
+                    Home
+                  </Link>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
+                  <NavigationMenuTrigger className="text-foreground hover:text-primary bg-transparent">
+                    Services
+                  </NavigationMenuTrigger>
+                  <NavigationMenuContent>
+                    <div className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] bg-background/95 backdrop-blur-sm">
+                      <div className="row-span-3">
+                        <NavigationMenuLink asChild>
+                          <Link
+                            to="/services"
+                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-primary/20 to-primary/10 p-6 no-underline outline-none focus:shadow-md"
+                          >
+                            <div className="mb-2 mt-4 text-lg font-medium text-foreground">
+                              All Services
+                            </div>
+                            <p className="text-sm leading-tight text-muted-foreground">
+                              Comprehensive digital solutions for modern businesses
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                      </div>
+                      <div className="grid gap-1">
+                        <div className="text-sm font-medium text-foreground p-2">Web Development</div>
+                        <div className="text-sm font-medium text-foreground p-2">Mobile Apps</div>
+                        <div className="text-sm font-medium text-foreground p-2">Data Analysis</div>
+                      </div>
+                    </div>
+                  </NavigationMenuContent>
+                </NavigationMenuItem>
+
+                <NavigationMenuItem>
+                  <Link to="/team" className="text-foreground hover:text-primary transition-colors duration-200 font-medium px-4 py-2">
+                    Team
+                  </Link>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
+                  <Link to="/projects" className="text-foreground hover:text-primary transition-colors duration-200 font-medium px-4 py-2">
+                    Projects
+                  </Link>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
+                  <Link to="/contact" className="text-foreground hover:text-primary transition-colors duration-200 font-medium px-4 py-2">
+                    Contact
+                  </Link>
+                </NavigationMenuItem>
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           {/* Desktop Actions */}

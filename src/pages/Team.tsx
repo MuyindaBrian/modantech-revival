@@ -63,6 +63,63 @@ const Team = () => {
           </div>
         </section>
 
+        {/* Team Members Section */}
+        <section className="py-20 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h3 className="text-3xl font-bold text-foreground mb-4">Meet Our Team</h3>
+              <p className="text-lg text-muted-foreground">The talented individuals behind ModanTech's success</p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* Team Member 1 */}
+              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm border border-border/50 p-6 hover:shadow-glow transition-all duration-300">
+                <div className="relative z-10 text-center">
+                  <div className="w-24 h-24 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-2xl">BM</span>
+                  </div>
+                  <h4 className="text-xl font-bold text-foreground mb-2">Brian Muyinda</h4>
+                  <p className="text-primary font-semibold mb-3">Lead Developer</p>
+                  <p className="text-muted-foreground text-sm">
+                    Full-stack developer with expertise in React, Node.js, and cloud technologies. Passionate about creating scalable solutions.
+                  </p>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+
+              {/* Team Member 2 */}
+              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm border border-border/50 p-6 hover:shadow-glow transition-all duration-300">
+                <div className="relative z-10 text-center">
+                  <div className="w-24 h-24 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-2xl">SK</span>
+                  </div>
+                  <h4 className="text-xl font-bold text-foreground mb-2">Sarah Kiwanuka</h4>
+                  <p className="text-primary font-semibold mb-3">UI/UX Designer</p>
+                  <p className="text-muted-foreground text-sm">
+                    Creative designer specializing in user experience and interface design. Focused on creating intuitive digital experiences.
+                  </p>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+
+              {/* Team Member 3 */}
+              <div className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-card/50 to-card/30 backdrop-blur-sm border border-border/50 p-6 hover:shadow-glow transition-all duration-300">
+                <div className="relative z-10 text-center">
+                  <div className="w-24 h-24 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-4">
+                    <span className="text-white font-bold text-2xl">DN</span>
+                  </div>
+                  <h4 className="text-xl font-bold text-foreground mb-2">David Namanya</h4>
+                  <p className="text-primary font-semibold mb-3">Data Scientist</p>
+                  <p className="text-muted-foreground text-sm">
+                    Data analytics expert with experience in machine learning and business intelligence solutions.
+                  </p>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-secondary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Stats Section */}
         <section className="py-20 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
