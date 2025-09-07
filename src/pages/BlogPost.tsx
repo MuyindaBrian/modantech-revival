@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import { useMemo } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -46,6 +47,23 @@ const BlogPostPage = () => {
       url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
     },
   ];
+
+  const headings = useMemo(() => {
+    if (!post) return [] as { depth: number; text: string; id: string }[];
+    const lines = post.content.split('\n');
+    const items: { depth: number; text: string; id: string }[] = [];
+    const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
+    for (const line of lines) {
+      const m = /^(#{1,6})\s+(.*)$/.exec(line);
+      if (m) {
+        const depth = m[1].length;
+        const text = m[2].trim();
+        const id = slugify(text);
+        items.push({ depth, text, id });
+      }
+    }
+    return items;
+  }, [post]);
 
   if (loading) {
     return (
@@ -177,6 +195,22 @@ const BlogPostPage = () => {
               }}
             />
           </div>
+
+          {/* Table of Contents */}
+          {headings.length > 0 && (
+            <aside className="mb-12 rounded-lg border border-border bg-card p-6">
+              <h2 className="text-lg font-semibold mb-4">Table of Contents</h2>
+              <nav>
+                <ul className="space-y-2 text-sm">
+                  {headings.map((h, i) => (
+                    <li key={i} className="leading-snug" style={{ paddingLeft: (h.depth - 1) * 12 }}>
+                      <a className="text-muted-foreground hover:text-primary" href={`#${h.id}`}>{h.text}</a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </aside>
+          )}
 
           {/* Content */}
           <div className="prose prose-lg max-w-none mb-12">
