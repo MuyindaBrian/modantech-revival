@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -15,6 +15,27 @@ import {
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const identity = (window as any).netlifyIdentity;
+    if (!identity) return;
+
+    const handleInit = (user: any) => setIsLoggedIn(!!user);
+    const handleLogin = () => setIsLoggedIn(true);
+    const handleLogout = () => setIsLoggedIn(false);
+
+    identity.on("init", handleInit);
+    identity.on("login", handleLogin);
+    identity.on("logout", handleLogout);
+    identity.init();
+
+    return () => {
+      identity.off("init", handleInit);
+      identity.off("login", handleLogin);
+      identity.off("logout", handleLogout);
+    };
+  }, []);
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -136,12 +157,29 @@ const Navigation = () => {
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Button variant="outline" className="px-4" asChild>
-              <Link to="/signin">Sign In</Link>
-            </Button>
-            <Button variant="hero" className="px-6" asChild>
-              <Link to="/signup">Sign Up</Link>
-            </Button>
+            {isLoggedIn ? (
+              <>
+                <Button variant="outline" className="px-4" asChild>
+                  <a href="/admin">Admin</a>
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="px-4"
+                  onClick={() => (window as any).netlifyIdentity?.logout?.()}
+                >
+                  Logout
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button variant="outline" className="px-4" asChild>
+                  <Link to="/signin">Sign In</Link>
+                </Button>
+                <Button variant="hero" className="px-6" asChild>
+                  <Link to="/signup">Sign Up</Link>
+                </Button>
+              </>
+            )}
           </div>
 
           {/* Mobile Menu Button */}
@@ -176,14 +214,32 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            <div className="flex gap-2 mt-4">
-              <Button variant="outline" className="flex-1" asChild>
-                <Link to="/signin">Sign In</Link>
-              </Button>
-              <Button variant="hero" className="flex-1" asChild>
-                <Link to="/signup">Sign Up</Link>
-              </Button>
-            </div>
+            {isLoggedIn ? (
+              <div className="flex gap-2 mt-4">
+                <Button variant="outline" className="flex-1" asChild>
+                  <a href="/admin" onClick={() => setIsOpen(false)}>Admin</a>
+                </Button>
+                <Button
+                  variant="secondary"
+                  className="flex-1"
+                  onClick={() => {
+                    (window as any).netlifyIdentity?.logout?.();
+                    setIsOpen(false);
+                  }}
+                >
+                  Logout
+                </Button>
+              </div>
+            ) : (
+              <div className="flex gap-2 mt-4">
+                <Button variant="outline" className="flex-1" asChild>
+                  <Link to="/signin" onClick={() => setIsOpen(false)}>Sign In</Link>
+                </Button>
+                <Button variant="hero" className="flex-1" asChild>
+                  <Link to="/signup" onClick={() => setIsOpen(false)}>Sign Up</Link>
+                </Button>
+              </div>
+            )}
           </div>
         )}
       </div>
