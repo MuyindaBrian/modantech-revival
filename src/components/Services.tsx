@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Monitor, Smartphone, BarChart3, CheckCircle } from "lucide-react";
+import { Monitor, Smartphone, BarChart3, CheckCircle, Palette, Search } from "lucide-react";
 
 const Services = () => {
   const services = [
@@ -12,6 +12,17 @@ const Services = () => {
         "Responsive Design",
         "E-commerce Solutions",
         "CMS Integration"
+      ]
+    },
+    {
+      icon: Palette,
+      title: "Web Design",
+      description: "Clean, user-centered interfaces that elevate your brand and convert visitors.",
+      features: [
+        "Brand-aligned UI Kits",
+        "Design Systems",
+        "Accessibility (WCAG)",
+        "Prototyping"
       ]
     },
     {
@@ -35,6 +46,17 @@ const Services = () => {
         "Predictive Analytics",
         "Real-time Dashboards"
       ]
+    },
+    {
+      icon: Search,
+      title: "SEO",
+      description: "Technical and on-page SEO to improve rankings, speed, and conversions.",
+      features: [
+        "Technical Audits",
+        "Core Web Vitals",
+        "Content Strategy",
+        "Schema & Sitemaps"
+      ]
     }
   ];
 
@@ -53,7 +75,7 @@ const Services = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 md:gap-8">
           {services.map((service, index) => {
             const IconComponent = service.icon;
             return (
