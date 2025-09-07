@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>ModanTech Blog</title>
+    <link>https://modantech.example</link>
+    <description>Latest articles from ModanTech</description>
+    <lastBuildDate>Sun, 07 Sep 2025 13:30:55 GMT</lastBuildDate>
+    <item>
+      <title>The Future of Web Development: AI and Beyond</title>
+      <link>https://modantech.example/blog/future-of-web-development</link>
+      <guid>https://modantech.example/blog/future-of-web-development</guid>
+      <pubDate>Mon, 15 Jan 2024 10:00:00 GMT</pubDate>
+      <description>Exploring how artificial intelligence and emerging technologies are reshaping the landscape of web development in 2024 and beyond.</description>
+    </item>
+    <item>
+      <title>Mobile-First Design: Best Practices for 2024</title>
+      <link>https://modantech.example/blog/mobile-first-design</link>
+      <guid>https://modantech.example/blog/mobile-first-design</guid>
+      <pubDate>Wed, 10 Jan 2024 14:30:00 GMT</pubDate>
+      <description>Learn the essential principles and techniques for creating exceptional mobile-first designs that engage users across all devices.</description>
+    </item>
+  </channel>
+</rss>

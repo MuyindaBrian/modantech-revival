@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import matter from 'gray-matter';
 
 export interface BlogPost {
   slug: string;
@@ -18,32 +19,32 @@ export const useBlog = () => {
   useEffect(() => {
     const loadBlogPosts = async () => {
       try {
-        // In a real implementation, this would fetch from your CMS or API
-        // For now, we'll use mock data that matches our markdown files
-        const mockPosts: BlogPost[] = [
-          {
-            slug: "future-of-web-development",
-            title: "The Future of Web Development: AI and Beyond",
-            description: "Exploring how artificial intelligence and emerging technologies are reshaping the landscape of web development in 2024 and beyond.",
-            author: "ModanTech Team",
-            date: "2024-01-15T10:00:00.000Z",
-            image: "/images/uploads/future-web-dev.jpg",
-            tags: ["Web Development", "AI", "Technology", "Future"],
-            content: "The web development landscape is evolving at an unprecedented pace..."
-          },
-          {
-            slug: "mobile-first-design",
-            title: "Mobile-First Design: Best Practices for 2024",
-            description: "Learn the essential principles and techniques for creating exceptional mobile-first designs that engage users across all devices.",
-            author: "Sarah Johnson",
-            date: "2024-01-10T14:30:00.000Z",
-            image: "/images/uploads/mobile-first.jpg",
-            tags: ["Mobile Design", "UX/UI", "Responsive Design", "Best Practices"],
-            content: "In today's digital landscape, mobile devices account for over 60% of web traffic..."
-          }
-        ];
-        
-        setPosts(mockPosts);
+        // Load markdown files at build-time using Vite's glob import
+        const files = import.meta.glob('../content/blog/*.md', { as: 'raw', eager: true }) as Record<string, string>;
+
+        const parsedPosts: BlogPost[] = Object.entries(files).map(([path, rawContent]) => {
+          const { data, content } = matter(rawContent);
+
+          // Compute slug from filename: YYYY-MM-DD-slug.md => slug
+          const fileName = path.split('/').pop() || '';
+          const baseName = fileName.replace(/\.md$/, '');
+          const slug = baseName.replace(/^\d{4}-\d{2}-\d{2}-/, '');
+
+          return {
+            slug,
+            title: data.title || slug,
+            description: data.description || '',
+            author: data.author || 'ModanTech',
+            date: data.date || new Date().toISOString(),
+            image: data.image || '/images/uploads/placeholder.jpg',
+            tags: Array.isArray(data.tags) ? data.tags : [],
+            content,
+          } as BlogPost;
+        })
+        // sort by date desc
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+        setPosts(parsedPosts);
         setLoading(false);
       } catch (error) {
         console.error('Failed to load blog posts:', error);

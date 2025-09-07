@@ -1,5 +1,10 @@
 import { useParams, Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeRaw from "rehype-raw";
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Button } from "@/components/ui/button";
@@ -7,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, User, ArrowLeft, Share2, Twitter, Facebook, Linkedin } from "lucide-react";
 import { useBlog, BlogPost } from "@/hooks/useBlog";
+import { Helmet } from "react-helmet-async";
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -88,8 +94,7 @@ const BlogPostPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* SEO Meta Tags */}
-      <head>
+      <Helmet>
         <title>{post.title} - ModanTech Blog</title>
         <meta name="description" content={post.description} />
         <meta property="og:title" content={post.title} />
@@ -102,7 +107,17 @@ const BlogPostPage = () => {
         <meta name="twitter:description" content={post.description} />
         <meta name="twitter:image" content={post.image} />
         <link rel="canonical" href={shareUrl} />
-      </head>
+        <script type="application/ld+json">{JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'Article',
+          headline: post.title,
+          description: post.description,
+          image: [post.image],
+          datePublished: post.date,
+          author: [{ '@type': 'Person', name: post.author }],
+          mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
+        })}</script>
+      </Helmet>
 
       <Navigation />
       
@@ -165,13 +180,16 @@ const BlogPostPage = () => {
 
           {/* Content */}
           <div className="prose prose-lg max-w-none mb-12">
-            <div className="text-foreground leading-relaxed space-y-6">
-              {post.content.split('\n\n').map((paragraph, index) => (
-                <p key={index} className="text-lg leading-relaxed">
-                  {paragraph}
-                </p>
-              ))}
-            </div>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
+              rehypePlugins={[
+                rehypeRaw,
+                rehypeSlug,
+                [rehypeAutolinkHeadings, { behavior: 'wrap' }],
+              ]}
+            >
+              {post.content}
+            </ReactMarkdown>
           </div>
 
           <Separator className="my-12" />

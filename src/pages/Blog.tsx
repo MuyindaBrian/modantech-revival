@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Calendar, User, Search, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBlog } from "@/hooks/useBlog";
+import { Helmet } from "react-helmet-async";
 
 const Blog = () => {
   const { posts, loading } = useBlog();
@@ -21,6 +22,14 @@ const Blog = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Helmet>
+        <title>Blog - ModanTech</title>
+        <meta name="description" content="Insights, tutorials, and the latest trends in technology and web development." />
+        <link rel="canonical" href={typeof window !== 'undefined' ? window.location.href : 'https://example.com/blog'} />
+        <meta property="og:title" content="ModanTech Blog" />
+        <meta property="og:description" content="Insights, tutorials, and the latest trends in technology and web development." />
+        <meta property="og:type" content="website" />
+      </Helmet>
       <Navigation />
       
       {/* Hero Section */}
