@@ -21,6 +21,7 @@ const Navigation = () => {
     { name: "Services", href: "/services" },
     { name: "Team", href: "/team" },
     { name: "Projects", href: "/projects" },
+    { name: "Blog", href: "/blog" },
     { name: "Contact", href: "/contact" },
   ];
 
@@ -53,12 +54,12 @@ const Navigation = () => {
                     Services
                   </NavigationMenuTrigger>
                   <NavigationMenuContent>
-                    <div className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] bg-background/95 backdrop-blur-sm">
+                    <div className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] bg-background border border-border shadow-lg z-50">
                       <div className="row-span-3">
                         <NavigationMenuLink asChild>
                           <Link
                             to="/services"
-                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-primary/20 to-primary/10 p-6 no-underline outline-none focus:shadow-md"
+                            className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-primary/20 to-primary/10 p-6 no-underline outline-none focus:shadow-md hover:bg-primary/5 transition-colors"
                           >
                             <div className="mb-2 mt-4 text-lg font-medium text-foreground">
                               All Services
@@ -70,9 +71,30 @@ const Navigation = () => {
                         </NavigationMenuLink>
                       </div>
                       <div className="grid gap-1">
-                        <div className="text-sm font-medium text-foreground p-2">Web Development</div>
-                        <div className="text-sm font-medium text-foreground p-2">Mobile Apps</div>
-                        <div className="text-sm font-medium text-foreground p-2">Data Analysis</div>
+                        <NavigationMenuLink asChild>
+                          <Link to="/services#web-development" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div className="text-sm font-medium leading-none">Web Development</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Custom websites and web applications
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/services#mobile-apps" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div className="text-sm font-medium leading-none">Mobile Apps</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              iOS and Android application development
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
+                        <NavigationMenuLink asChild>
+                          <Link to="/services#data-analysis" className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground">
+                            <div className="text-sm font-medium leading-none">Data Analysis</div>
+                            <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">
+                              Business intelligence and analytics
+                            </p>
+                          </Link>
+                        </NavigationMenuLink>
                       </div>
                     </div>
                   </NavigationMenuContent>
@@ -87,6 +109,12 @@ const Navigation = () => {
                 <NavigationMenuItem>
                   <Link to="/projects" className="text-foreground hover:text-primary transition-colors duration-200 font-medium px-4 py-2">
                     Projects
+                  </Link>
+                </NavigationMenuItem>
+                
+                <NavigationMenuItem>
+                  <Link to="/blog" className="text-foreground hover:text-primary transition-colors duration-200 font-medium px-4 py-2">
+                    Blog
                   </Link>
                 </NavigationMenuItem>
                 
@@ -108,8 +136,11 @@ const Navigation = () => {
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
+            <Button variant="outline" className="px-4" asChild>
+              <Link to="/signin">Sign In</Link>
+            </Button>
             <Button variant="hero" className="px-6" asChild>
-              <Link to="/contact">Get Started</Link>
+              <Link to="/signup">Sign Up</Link>
             </Button>
           </div>
 
@@ -145,9 +176,14 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            <Button variant="hero" className="w-full mt-4" asChild>
-              <Link to="/contact">Get Started</Link>
-            </Button>
+            <div className="flex gap-2 mt-4">
+              <Button variant="outline" className="flex-1" asChild>
+                <Link to="/signin">Sign In</Link>
+              </Button>
+              <Button variant="hero" className="flex-1" asChild>
+                <Link to="/signup">Sign Up</Link>
+              </Button>
+            </div>
           </div>
         )}
       </div>
