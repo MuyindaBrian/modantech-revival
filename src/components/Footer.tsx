@@ -6,12 +6,11 @@ const Footer = () => {
       <div className="container mx-auto px-4">
         <div className="grid gap-8 md:grid-cols-3 items-center">
           <div className="flex items-center justify-center md:justify-start space-x-2">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">MT</span>
-            </div>
-            <span className="text-xl font-bold">
-              Modan<span className="text-primary">Tech</span>
-            </span>
+            <picture>
+              <source srcSet="/images/brand/logo-dark.svg" media="(prefers-color-scheme: dark)" />
+              <img src="/images/brand/logo-light.svg" alt="ModanTech" className="h-8 w-auto" />
+            </picture>
+            <span className="sr-only">ModanTech</span>
           </div>
 
           <nav className="text-center">

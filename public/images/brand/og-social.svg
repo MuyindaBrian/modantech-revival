@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0f172a"/>
+  <g transform="translate(260,120)">
+    <path d="M0 360V40h80l144 144 48-48 144-96h80v320h-96V180l-120 120-120-120v180H0z" fill="url(#g)"/>
+  </g>
+  <text x="600" y="520" text-anchor="middle" font-family="Inter, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif" font-size="72" fill="#e5e7eb">MODANTECH</text>
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="480" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0A4CA3"/>
+      <stop offset="1" stop-color="#1FA0FF"/>
+    </linearGradient>
+  </defs>
+</svg>
+
