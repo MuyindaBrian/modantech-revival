@@ -53,14 +53,13 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">MT</span>
-            </div>
-            <span className="text-xl font-bold">
-              Modan<span className="gradient-text">Tech</span>
-            </span>
-          </div>
+          <a href="/" className="flex items-center space-x-2">
+            <picture>
+              <source srcSet="/images/brand/logo-dark.svg" media="(prefers-color-scheme: dark)" />
+              <img src="/images/brand/logo-light.svg" alt="ModanTech" className="h-8 w-auto" />
+            </picture>
+            <span className="sr-only">ModanTech</span>
+          </a>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-8">
