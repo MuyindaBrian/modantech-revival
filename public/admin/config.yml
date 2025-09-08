@@ -19,3 +19,13 @@ collections:
       - {label: "Featured Image", name: "image", widget: "image"}
       - {label: "Tags", name: "tags", widget: "list"}
       - {label: "Body", name: "body", widget: "markdown"}
+  - name: "settings"
+    label: "Site Settings"
+    files:
+      - label: "Profile"
+        name: "profile"
+        file: "public/settings/site.json"
+        fields:
+          - {label: "Display Name", name: "displayName", widget: "string"}
+          - {label: "Initials", name: "initials", widget: "string"}
+          - {label: "Avatar", name: "avatar", widget: "image", required: false}

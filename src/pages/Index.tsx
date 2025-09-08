@@ -6,6 +6,7 @@ import Portfolio from "@/components/Portfolio";
 import BlogSection from "@/components/BlogSection";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import Newsletter from "@/components/Newsletter";
 
 const Index = () => {
   return (
@@ -17,6 +18,7 @@ const Index = () => {
         <About />
         <Portfolio />
         <BlogSection />
+        <Newsletter />
         <Contact />
       </main>
       <Footer />

@@ -11,11 +11,13 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
+import { useSettings } from "@/hooks/useSettings";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { settings } = useSettings();
 
   useEffect(() => {
     const identity = (window as any).netlifyIdentity;
@@ -159,9 +161,16 @@ const Navigation = () => {
             </Button>
             {isLoggedIn ? (
               <>
-                <Button variant="outline" className="px-4" asChild>
-                  <a href="/admin">Admin</a>
-                </Button>
+                <a href="/admin" className="flex items-center gap-2 px-3 py-2 rounded-md border hover:bg-accent transition-colors">
+                  {settings?.avatar ? (
+                    <img src={settings.avatar} alt={settings.displayName} className="h-6 w-6 rounded-full object-cover" />
+                  ) : (
+                    <div className="h-6 w-6 rounded-full bg-primary text-white grid place-items-center text-xs font-semibold">
+                      {settings?.initials || 'AD'}
+                    </div>
+                  )}
+                  <span className="text-sm">{settings?.displayName || 'Admin'}</span>
+                </a>
                 <Button
                   variant="secondary"
                   className="px-4"
