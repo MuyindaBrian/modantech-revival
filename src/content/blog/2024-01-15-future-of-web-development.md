@@ -1,10 +1,15 @@
 ---
 title: "The Future of Web Development: AI and Beyond"
-description: "Exploring how artificial intelligence and emerging technologies are reshaping the landscape of web development in 2024 and beyond."
-author: "ModanTech Team"
-date: "2024-01-15T10:00:00.000Z"
-image: "/images/uploads/future-web-dev.jpg"
-tags: ["Web Development", "AI", "Technology", "Future"]
+description: Exploring how artificial intelligence and emerging technologies are
+  reshaping the landscape of web development in 2024 and beyond.
+author: Muyinda Brian
+date: 2024-01-15T10:00:00.000Z
+image: /images/uploads/web-dev.jpg
+tags:
+  - Web Development
+  - AI
+  - Technology
+  - Future
 ---
 
 # The Future of Web Development: AI and Beyond
