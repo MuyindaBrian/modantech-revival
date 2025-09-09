@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
@@ -14,6 +14,7 @@ import { Separator } from "@/components/ui/separator";
 import { Calendar, User, ArrowLeft, Share2, Twitter, Facebook, Linkedin } from "lucide-react";
 import { useBlog, BlogPost } from "@/hooks/useBlog";
 import { Helmet } from "react-helmet-async";
+import { useSettings } from "@/hooks/useSettings";
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -21,6 +22,7 @@ const BlogPostPage = () => {
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState<number | null>(null);
+  const { settings } = useSettings();
 
   useEffect(() => {
     const foundPost = posts.find(p => p.slug === slug);
@@ -60,6 +62,12 @@ const BlogPostPage = () => {
       url: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`,
     },
   ];
+
+  const readTime = useMemo(() => {
+    if (!post) return 1;
+    const words = post.content.split(/\s+/).filter(Boolean).length;
+    return Math.max(1, Math.round(words / 200));
+  }, [post]);
 
   const headings = useMemo(() => {
     if (!post) return [] as { depth: number; text: string; id: string }[];
@@ -151,8 +159,19 @@ const BlogPostPage = () => {
       </Helmet>
 
       <Navigation />
-      
-      <article className="pt-24 pb-16">
+
+      {/* Hero Banner */}
+      <div className="relative mt-16 md:mt-20">
+        <div className="h-56 md:h-72 w-full" style={{
+          backgroundImage: `url(${post.image})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}>
+          <div className="w-full h-full bg-gradient-to-t from-background/80 to-background/20" />
+        </div>
+      </div>
+
+      <article className="pt-10 pb-16">
         <div className="container mx-auto px-4 max-w-4xl">
           {/* Back Button */}
           <Button variant="ghost" className="mb-8" asChild>
@@ -181,6 +200,10 @@ const BlogPostPage = () => {
                   day: 'numeric' 
                 })}</span>
               </div>
+              <div className="flex items-center gap-2">
+                <span>•</span>
+                <span>{readTime} min read</span>
+              </div>
               {views !== null && (
                 <div className="flex items-center gap-2">
                   <span>•</span>
@@ -202,17 +225,19 @@ const BlogPostPage = () => {
             </p>
           </header>
 
-          {/* Featured Image */}
-          <div className="mb-12">
-            <img 
-              src={post.image} 
-              alt={post.title}
-              className="w-full h-96 object-cover rounded-lg shadow-soft"
-              onError={(e) => {
-                const target = e.target as HTMLImageElement;
-                target.src = "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=800&h=400&fit=crop";
-              }}
-            />
+          {/* Author Card */}
+          <div className="mb-10 flex items-center gap-4 p-4 rounded-lg border bg-card/60">
+            {settings?.avatar ? (
+              <img src={settings.avatar} alt={settings.displayName} className="h-12 w-12 rounded-full object-cover" />
+            ) : (
+              <div className="h-12 w-12 rounded-full bg-primary text-white grid place-items-center font-semibold">
+                {(settings?.initials || 'AD').slice(0,2)}
+              </div>
+            )}
+            <div>
+              <div className="font-semibold">{settings?.displayName || post.author}</div>
+              <div className="text-sm text-muted-foreground">Published {new Date(post.date).toLocaleDateString()}</div>
+            </div>
           </div>
 
           {/* Table of Contents */}
