@@ -20,12 +20,25 @@ const BlogPostPage = () => {
   const { posts } = useBlog();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
+  const [views, setViews] = useState<number | null>(null);
 
   useEffect(() => {
     const foundPost = posts.find(p => p.slug === slug);
     setPost(foundPost || null);
     setLoading(false);
   }, [slug, posts]);
+
+  useEffect(() => {
+    if (!slug) return;
+    const ns = 'modantech_blog';
+    const key = slug;
+    // CountAPI: create/increment and then get value
+    fetch(`https://api.countapi.xyz/hit/${ns}/${key}`)
+      .then(() => fetch(`https://api.countapi.xyz/get/${ns}/${key}`))
+      .then(r => r.json())
+      .then(data => setViews(typeof data.value === 'number' ? data.value : null))
+      .catch(() => setViews(null));
+  }, [slug]);
 
   const shareUrl = window.location.href;
   const shareTitle = post?.title || "";
@@ -168,6 +181,12 @@ const BlogPostPage = () => {
                   day: 'numeric' 
                 })}</span>
               </div>
+              {views !== null && (
+                <div className="flex items-center gap-2">
+                  <span>•</span>
+                  <span>{views.toLocaleString()} views</span>
+                </div>
+              )}
             </div>
 
             <div className="flex flex-wrap gap-2 mb-8">

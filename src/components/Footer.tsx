@@ -5,12 +5,12 @@ const Footer = () => {
     <footer className="bg-foreground text-background py-14">
       <div className="container mx-auto px-4">
         <div className="grid gap-8 md:grid-cols-3 items-center">
-          <div className="flex items-center justify-center md:justify-start space-x-2">
+          <div className="flex items-center justify-center md:justify-start space-x-3">
             <picture>
               <source srcSet="/images/brand/logo-dark.svg" media="(prefers-color-scheme: dark)" />
               <img src="/images/brand/logo-light.svg" alt="ModanTech" className="h-8 w-auto" />
             </picture>
-            <span className="sr-only">ModanTech</span>
+            <span className="text-xl font-semibold">ModanTech</span>
           </div>
 
           <nav className="text-center">

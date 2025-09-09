@@ -58,10 +58,10 @@ const Contact = () => {
                         <h4 className="font-semibold text-foreground mb-2">Call Us</h4>
                         <div className="space-y-1">
                           <a 
-                            href="tel:+256751055947" 
+                            href="tel:+256757638037" 
                             className="block text-muted-foreground hover:text-primary transition-colors duration-300"
                           >
-                            +256 751 055 947
+                            +256 757 638 037
                           </a>
                           <a 
                             href="tel:+256706851534" 

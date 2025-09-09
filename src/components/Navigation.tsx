@@ -53,12 +53,12 @@ const Navigation = () => {
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
-          <a href="/" className="flex items-center space-x-2">
+          <a href="/" className="flex items-center space-x-3">
             <picture>
               <source srcSet="/images/brand/logo-dark.svg" media="(prefers-color-scheme: dark)" />
               <img src="/images/brand/logo-light.svg" alt="ModanTech" className="h-8 w-auto" />
             </picture>
-            <span className="sr-only">ModanTech</span>
+            <span className="text-lg font-semibold tracking-tight">ModanTech</span>
           </a>
 
           {/* Desktop Navigation */}
