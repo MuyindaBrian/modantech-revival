@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,7 +14,15 @@ const Blog = () => {
   const { posts, loading } = useBlog();
   const [searchTerm, setSearchTerm] = useState("");
 
-  const filteredPosts = posts.filter(post =>
+  const postsWithReadTime = useMemo(() => {
+    return posts.map(p => {
+      const words = p.content.split(/\s+/).filter(Boolean).length;
+      const minutes = Math.max(1, Math.round(words / 200));
+      return { ...p, readTime: minutes } as typeof p & { readTime: number };
+    });
+  }, [posts]);
+
+  const filteredPosts = postsWithReadTime.filter(post =>
     post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     post.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
     post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -94,12 +102,12 @@ const Blog = () => {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredPosts.map((post) => (
-                <Card key={post.slug} className="group hover:shadow-glow transition-all duration-300">
+                <Card key={post.slug} className="group hover:shadow-glow transition-all duration-300 overflow-hidden border-border/70">
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img 
                       src={post.image} 
                       alt={post.title}
-                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => {
                         const target = e.target as HTMLImageElement;
                         target.src = "https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?w=500&h=300&fit=crop";
@@ -114,6 +122,7 @@ const Blog = () => {
                       <span>{post.author}</span>
                       <Calendar className="w-4 h-4 ml-2" />
                       <span>{new Date(post.date).toLocaleDateString()}</span>
+                      <span className="ml-2">• {post.readTime} min read</span>
                     </div>
                     
                     <CardTitle className="line-clamp-2 group-hover:text-primary transition-colors duration-300">
