@@ -21,7 +21,7 @@ export const useBlog = () => {
       try {
         // Load markdown files at build-time using Vite's glob import
         // Use modern Vite glob API so markdown is bundled reliably in production
-        const files = import.meta.glob('../content/blog/*.md', { eager: true, query: '?raw', import: 'default' }) as Record<string, string>;
+        const files = import.meta.glob('/src/content/blog/*.md', { eager: true, query: '?raw', import: 'default' }) as Record<string, string>;
 
         const parsedPosts: BlogPost[] = Object.entries(files).map(([path, rawContent]) => {
           const { data, content } = matter(rawContent);

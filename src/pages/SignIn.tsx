@@ -30,8 +30,8 @@ const SignIn = () => {
                   <Label htmlFor="password">Password</Label>
                   <Input id="password" type="password" placeholder="Enter your password" />
                 </div>
-                <Button className="w-full" variant="hero">
-                  Sign In
+                <Button className="w-full" variant="hero" asChild>
+                  <a href="/admin">Sign in with Netlify Identity</a>
                 </Button>
                 <div className="text-center">
                   <Button variant="link" asChild>

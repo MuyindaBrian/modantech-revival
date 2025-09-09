@@ -44,8 +44,8 @@ const SignUp = () => {
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input id="confirmPassword" type="password" placeholder="Confirm your password" />
                 </div>
-                <Button className="w-full" variant="hero">
-                  Create Account
+                <Button className="w-full" variant="hero" asChild>
+                  <a href="/admin">Sign up with Netlify Identity</a>
                 </Button>
                 <div className="text-center text-sm text-muted-foreground">
                   Already have an account?{" "}
