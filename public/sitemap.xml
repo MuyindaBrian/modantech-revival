@@ -1,27 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://modantech.example/</loc>
+    <loc>https://example.com/</loc>
   </url>
   <url>
-    <loc>https://modantech.example/services</loc>
+    <loc>https://example.com/services</loc>
   </url>
   <url>
-    <loc>https://modantech.example/projects</loc>
+    <loc>https://example.com/projects</loc>
   </url>
   <url>
-    <loc>https://modantech.example/team</loc>
+    <loc>https://example.com/team</loc>
   </url>
   <url>
-    <loc>https://modantech.example/blog</loc>
+    <loc>https://example.com/blog</loc>
   </url>
   <url>
-    <loc>https://modantech.example/contact</loc>
+    <loc>https://example.com/contact</loc>
   </url>
   <url>
-    <loc>https://modantech.example/blog/future-of-web-development</loc>
+    <loc>https://example.com/blog/afro-mobile-uganda-streaming</loc>
   </url>
   <url>
-    <loc>https://modantech.example/blog/mobile-first-design</loc>
+    <loc>https://example.com/blog/agentic-ai-trend-2025</loc>
+  </url>
+  <url>
+    <loc>https://example.com/blog/iot-transforming-agriculture-uganda</loc>
+  </url>
+  <url>
+    <loc>https://example.com/blog/uganda-green-tech-solar-emobility</loc>
+  </url>
+  <url>
+    <loc>https://example.com/blog/future-of-web-development</loc>
   </url>
 </urlset>

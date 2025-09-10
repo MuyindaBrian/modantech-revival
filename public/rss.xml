@@ -2,22 +2,43 @@
 <rss version="2.0">
   <channel>
     <title>ModanTech Blog</title>
-    <link>https://modantech.example</link>
+    <link>https://example.com</link>
     <description>Latest articles from ModanTech</description>
-    <lastBuildDate>Sun, 07 Sep 2025 13:30:55 GMT</lastBuildDate>
+    <lastBuildDate>Wed, 10 Sep 2025 06:57:30 GMT</lastBuildDate>
     <item>
-      <title>The Future of Web Development: AI and Beyond</title>
-      <link>https://modantech.example/blog/future-of-web-development</link>
-      <guid>https://modantech.example/blog/future-of-web-development</guid>
-      <pubDate>Mon, 15 Jan 2024 10:00:00 GMT</pubDate>
-      <description>Exploring how artificial intelligence and emerging technologies are reshaping the landscape of web development in 2024 and beyond.</description>
+      <title>Afro Mobile: Uganda’s Netflix of Local Content</title>
+      <link>https://example.com/blog/afro-mobile-uganda-streaming</link>
+      <guid>https://example.com/blog/afro-mobile-uganda-streaming</guid>
+      <pubDate>Sun, 07 Sep 2025 00:00:00 GMT</pubDate>
+      <description>Discover how Afro Mobile is reshaping Uganda’s streaming landscape, empowering local creators, and changing how people consume digital content.</description>
     </item>
     <item>
-      <title>Mobile-First Design: Best Practices for 2024</title>
-      <link>https://modantech.example/blog/mobile-first-design</link>
-      <guid>https://modantech.example/blog/mobile-first-design</guid>
-      <pubDate>Wed, 10 Jan 2024 14:30:00 GMT</pubDate>
-      <description>Learn the essential principles and techniques for creating exceptional mobile-first designs that engage users across all devices.</description>
+      <title>Agentic AI is Redefining the Future</title>
+      <link>https://example.com/blog/agentic-ai-trend-2025</link>
+      <guid>https://example.com/blog/agentic-ai-trend-2025</guid>
+      <pubDate>Sun, 07 Sep 2025 00:00:00 GMT</pubDate>
+      <description>Agentic AI is the hottest global tech trend of 2025. Learn how autonomous AI systems are transforming industries and what it means for Uganda.</description>
+    </item>
+    <item>
+      <title>How IoT is Transforming Agriculture in Uganda</title>
+      <link>https://example.com/blog/iot-transforming-agriculture-uganda</link>
+      <guid>https://example.com/blog/iot-transforming-agriculture-uganda</guid>
+      <pubDate>Sun, 07 Sep 2025 00:00:00 GMT</pubDate>
+      <description>Explore how IoT is revolutionizing farming in Uganda, improving crop yields, reducing costs, and helping farmers adapt to climate change.</description>
+    </item>
+    <item>
+      <title>Uganda’s Green Tech Revolution: Solar &amp; E-Mobility</title>
+      <link>https://example.com/blog/uganda-green-tech-solar-emobility</link>
+      <guid>https://example.com/blog/uganda-green-tech-solar-emobility</guid>
+      <pubDate>Sun, 07 Sep 2025 00:00:00 GMT</pubDate>
+      <description>Uganda is driving innovation in solar energy and e-mobility. Learn how renewable energy projects and electric vehicles are shaping the future.</description>
+    </item>
+    <item>
+      <title>The Future of Web Development: AI and Beyond</title>
+      <link>https://example.com/blog/future-of-web-development</link>
+      <guid>https://example.com/blog/future-of-web-development</guid>
+      <pubDate>Mon, 15 Jan 2024 10:00:00 GMT</pubDate>
+      <description>Exploring how artificial intelligence and emerging technologies are reshaping the landscape of web development in 2024 and beyond.</description>
     </item>
   </channel>
 </rss>
