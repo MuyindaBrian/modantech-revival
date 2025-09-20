@@ -4,7 +4,14 @@
     <title>ModanTech Blog</title>
     <link>https://example.com</link>
     <description>Latest articles from ModanTech</description>
-    <lastBuildDate>Wed, 10 Sep 2025 06:57:30 GMT</lastBuildDate>
+    <lastBuildDate>Sat, 20 Sep 2025 12:53:19 GMT</lastBuildDate>
+    <item>
+      <title>The Future of Web Development: AI and Beyond</title>
+      <link>https://example.com/blog/the-future-of-web-development-ai-and-beyond</link>
+      <guid>https://example.com/blog/the-future-of-web-development-ai-and-beyond</guid>
+      <pubDate>Wed, 10 Sep 2025 06:53:33 GMT</pubDate>
+      <description>Exploring how artificial intelligence and emerging technologies are reshaping the landscape of web development in 2024 and beyond.</description>
+    </item>
     <item>
       <title>Afro Mobile: Uganda’s Netflix of Local Content</title>
       <link>https://example.com/blog/afro-mobile-uganda-streaming</link>
