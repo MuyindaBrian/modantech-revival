@@ -1,7 +1,9 @@
 import { useState, useEffect } from 'react';
-import matter from 'gray-matter';
+import { collection, query, orderBy, getDocs, doc, getDoc } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
 
 export interface BlogPost {
+  id: string;
   slug: string;
   title: string;
   description: string;
@@ -10,6 +12,7 @@ export interface BlogPost {
   image: string;
   tags: string[];
   content: string;
+  published: boolean;
 }
 
 export const useBlog = () => {
@@ -19,31 +22,16 @@ export const useBlog = () => {
   useEffect(() => {
     const loadBlogPosts = async () => {
       try {
-        // Load markdown files at build-time using Vite's glob import
-        // Use modern Vite glob API so markdown is bundled reliably in production
-        const files = import.meta.glob('./content/blog/*.md', { eager: true, query: '?raw', import: 'default' }) as Record<string, string>;
+        const postsRef = collection(db, 'posts');
+        const q = query(postsRef, orderBy('date', 'desc'));
+        const querySnapshot = await getDocs(q);
 
-        const parsedPosts: BlogPost[] = Object.entries(files).map(([path, rawContent]) => {
-          const { data, content } = matter(rawContent);
-
-          // Compute slug from filename: YYYY-MM-DD-slug.md => slug
-          const fileName = path.split('/').pop() || '';
-          const baseName = fileName.replace(/\.md$/, '');
-          const slug = baseName.replace(/^\d{4}-\d{2}-\d{2}-/, '');
-
-          return {
-            slug,
-            title: data.title || slug,
-            description: data.description || '',
-            author: data.author || 'ModanTech',
-            date: data.date || new Date().toISOString(),
-            image: data.image || '/images/uploads/placeholder.jpg',
-            tags: Array.isArray(data.tags) ? data.tags : [],
-            content,
-          } as BlogPost;
-        })
-          // sort by date desc
-          .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        const parsedPosts: BlogPost[] = querySnapshot.docs
+          .map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          } as BlogPost))
+          .filter(post => post.published);
 
         setPosts(parsedPosts);
         setLoading(false);
@@ -57,4 +45,24 @@ export const useBlog = () => {
   }, []);
 
   return { posts, loading };
+};
+
+export const getBlogPost = async (slug: string): Promise<BlogPost | null> => {
+  try {
+    const postsRef = collection(db, 'posts');
+    const q = query(postsRef);
+    const querySnapshot = await getDocs(q);
+
+    const post = querySnapshot.docs
+      .map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      } as BlogPost))
+      .find(p => p.slug === slug);
+
+    return post || null;
+  } catch (error) {
+    console.error('Failed to load blog post:', error);
+    return null;
+  }
 };

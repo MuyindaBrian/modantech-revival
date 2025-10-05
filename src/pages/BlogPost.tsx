@@ -12,23 +12,24 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Calendar, User, ArrowLeft, Share2, Twitter, Facebook, Linkedin } from "lucide-react";
-import { useBlog, BlogPost } from "@/hooks/useBlog";
-import { Helmet } from "react-helmet-async";
+import { getBlogPost, BlogPost } from "@/hooks/useBlog";
+import SEO from "@/components/SEO";
 import { useSettings } from "@/hooks/useSettings";
 
 const BlogPostPage = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { posts } = useBlog();
   const [post, setPost] = useState<BlogPost | null>(null);
   const [loading, setLoading] = useState(true);
   const [views, setViews] = useState<number | null>(null);
   const { settings } = useSettings();
 
   useEffect(() => {
-    const foundPost = posts.find(p => p.slug === slug);
-    setPost(foundPost || null);
-    setLoading(false);
-  }, [slug, posts]);
+    if (!slug) return;
+    getBlogPost(slug).then((foundPost) => {
+      setPost(foundPost);
+      setLoading(false);
+    });
+  }, [slug]);
 
   useEffect(() => {
     if (!slug) return;
@@ -133,30 +134,18 @@ const BlogPostPage = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Helmet>
-        <title>{post.title} - ModanTech Blog</title>
-        <meta name="description" content={post.description} />
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.description} />
-        <meta property="og:image" content={post.image} />
-        <meta property="og:url" content={shareUrl} />
-        <meta property="og:type" content="article" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={post.title} />
-        <meta name="twitter:description" content={post.description} />
-        <meta name="twitter:image" content={post.image} />
-        <link rel="canonical" href={shareUrl} />
-        <script type="application/ld+json">{JSON.stringify({
-          '@context': 'https://schema.org',
-          '@type': 'Article',
-          headline: post.title,
-          description: post.description,
-          image: [post.image],
-          datePublished: post.date,
-          author: [{ '@type': 'Person', name: post.author }],
-          mainEntityOfPage: { '@type': 'WebPage', '@id': shareUrl },
-        })}</script>
-      </Helmet>
+      <SEO
+        title={post.title}
+        description={post.description}
+        image={post.image}
+        url={`/blog/${post.slug}`}
+        type="article"
+        article={{
+          publishedTime: post.date,
+          author: post.author,
+          tags: post.tags,
+        }}
+      />
 
       <Navigation />
 
