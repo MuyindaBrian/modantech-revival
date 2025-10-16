@@ -14,13 +14,16 @@ interface SEOProps {
 }
 
 const SEO = ({ title, description, image, url, type = 'website', article }: SEOProps) => {
-  const siteName = 'ModanTech';
-  const defaultImage = 'https://modantech.netlify.app/images/brand/og-social.svg';
-  const siteUrl = 'https://modantech.netlify.app';
+  const envSiteName = import.meta.env.VITE_SITE_NAME as string | undefined;
+  const envSiteUrl = import.meta.env.VITE_SITE_URL as string | undefined;
+  const siteName = envSiteName || 'ModanTech';
+  const runtimeOrigin = typeof window !== 'undefined' ? window.location.origin : '';
+  const siteUrl = envSiteUrl || runtimeOrigin || 'https://example.com';
+  const defaultImage = `${siteUrl}/images/brand/og-social.svg`;
 
   const fullTitle = `${title} | ${siteName}`;
   const fullUrl = url ? `${siteUrl}${url}` : siteUrl;
-  const fullImage = image || defaultImage;
+  const fullImage = image?.startsWith('http') ? image : (image ? `${siteUrl}${image}` : defaultImage);
 
   return (
     <Helmet>
