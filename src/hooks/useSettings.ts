@@ -13,7 +13,7 @@ export const useSettings = () => {
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch('/src/content/settings/site.json');
+        const res = await fetch('/settings/site.json');
         if (!res.ok) throw new Error('Failed to load settings');
         const data = await res.json();
         setSettings(data as SiteSettings);

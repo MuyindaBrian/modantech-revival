@@ -12,6 +12,8 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { useSettings } from "@/hooks/useSettings";
+import { auth } from "@/lib/firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,23 +22,10 @@ const Navigation = () => {
   const { settings } = useSettings();
 
   useEffect(() => {
-    const identity = (window as any).netlifyIdentity;
-    if (!identity) return;
-
-    const handleInit = (user: any) => setIsLoggedIn(!!user);
-    const handleLogin = () => setIsLoggedIn(true);
-    const handleLogout = () => setIsLoggedIn(false);
-
-    identity.on("init", handleInit);
-    identity.on("login", handleLogin);
-    identity.on("logout", handleLogout);
-    identity.init();
-
-    return () => {
-      identity.off("init", handleInit);
-      identity.off("login", handleLogin);
-      identity.off("logout", handleLogout);
-    };
+    const unsub = onAuthStateChanged(auth, (user) => {
+      setIsLoggedIn(!!user);
+    });
+    return () => unsub();
   }, []);
 
   const navItems = [
@@ -173,7 +162,7 @@ const Navigation = () => {
                 <Button
                   variant="secondary"
                   className="px-4"
-                  onClick={() => (window as any).netlifyIdentity?.logout?.()}
+                  onClick={() => signOut(auth)}
                 >
                   Logout
                 </Button>
@@ -231,7 +220,7 @@ const Navigation = () => {
                   variant="secondary"
                   className="flex-1"
                   onClick={() => {
-                    (window as any).netlifyIdentity?.logout?.();
+                    signOut(auth);
                     setIsOpen(false);
                   }}
                 >

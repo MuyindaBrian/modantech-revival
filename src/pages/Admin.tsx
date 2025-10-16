@@ -19,6 +19,7 @@ const Admin = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -38,10 +39,19 @@ const Admin = () => {
   });
 
   useEffect(() => {
+    const allowedEmails = (import.meta.env.VITE_ADMIN_EMAILS || "")
+      .split(",")
+      .map((e) => e.trim().toLowerCase())
+      .filter(Boolean);
+
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
+      const email = (currentUser?.email || "").toLowerCase();
+      const allowed =
+        allowedEmails.length === 0 || (email && allowedEmails.includes(email));
+      setIsAdmin(!!currentUser && allowed);
       setLoading(false);
-      if (currentUser) {
+      if (currentUser && allowed) {
         loadPosts();
       }
     });
@@ -206,6 +216,25 @@ const Admin = () => {
               </div>
               <Button type="submit" className="w-full">Sign In</Button>
             </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (user && !isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="w-full max-w-md">
+          <CardHeader>
+            <CardTitle>Access Denied</CardTitle>
+            <CardDescription>Your account does not have admin access.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex gap-2">
+              <Button variant="outline" onClick={() => navigate("/")}>Go Home</Button>
+              <Button onClick={handleLogout}>Logout</Button>
+            </div>
           </CardContent>
         </Card>
       </div>
