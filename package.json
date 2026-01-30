@@ -9,7 +9,9 @@
     "postbuild": "node scripts/generate-feeds.mjs",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "supabase:login": "supabase login",
+    "supabase:migrate": "supabase db push --file supabase/init.sql"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -46,7 +48,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.6.0",
-    "firebase": "^12.3.0",
+    "@supabase/supabase-js": "^2.36.0",
     "gray-matter": "^4.0.3",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",

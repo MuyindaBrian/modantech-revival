@@ -1,9 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy, Timestamp } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
-import { db, auth, storage } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -17,7 +15,7 @@ import { BlogPost } from '@/hooks/useBlog';
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
@@ -38,35 +36,49 @@ const Admin = () => {
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      const currentUser = session?.user ?? null;
       setUser(currentUser);
       setLoading(false);
       if (currentUser) {
         loadPosts();
       }
     });
-    return () => unsubscribe();
+
+    // check initial session
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      const currentUser = data?.session?.user ?? null;
+      setUser(currentUser);
+      setLoading(false);
+      if (currentUser) loadPosts();
+    })();
+
+    return () => listener?.subscription?.unsubscribe?.();
   }, []);
 
   const loadPosts = async () => {
     try {
-      const postsRef = collection(db, 'posts');
-      const q = query(postsRef, orderBy('date', 'desc'));
-      const querySnapshot = await getDocs(q);
-      const loadedPosts = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as BlogPost));
-      setPosts(loadedPosts);
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('date', { ascending: false });
+      if (error) throw error;
+      setPosts((data || []) as BlogPost[]);
     } catch (error) {
       console.error('Failed to load posts:', error);
     }
   };
 
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+      if (error) throw error;
     } catch (error) {
       console.error('Login failed:', error);
       alert('Login failed. Please check your credentials.');
@@ -75,7 +87,7 @@ const Admin = () => {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth);
+      await supabase.auth.signOut();
       navigate('/');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -87,10 +99,11 @@ const Admin = () => {
     if (!file) return;
 
     try {
-      const storageRef = ref(storage, `blog-images/${Date.now()}-${file.name}`);
-      await uploadBytes(storageRef, file);
-      const downloadURL = await getDownloadURL(storageRef);
-      setFormData({ ...formData, image: downloadURL });
+      const filePath = `blog-images/${Date.now()}-${file.name}`;
+      const { error: uploadError } = await supabase.storage.from('blog-images').upload(filePath, file);
+      if (uploadError) throw uploadError;
+      const { data: publicUrlData } = supabase.storage.from('blog-images').getPublicUrl(filePath);
+      setFormData({ ...formData, image: publicUrlData.publicUrl || '' });
     } catch (error) {
       console.error('Image upload failed:', error);
       alert('Image upload failed. Please try again.');
@@ -114,10 +127,9 @@ const Admin = () => {
 
     try {
       if (editingPost) {
-        const postRef = doc(db, 'posts', editingPost.id);
-        await updateDoc(postRef, postData);
+        await supabase.from('posts').update(postData).eq('id', editingPost.id);
       } else {
-        await addDoc(collection(db, 'posts'), postData);
+        await supabase.from('posts').insert(postData);
       }
 
       resetForm();
@@ -147,7 +159,7 @@ const Admin = () => {
     if (!confirm('Are you sure you want to delete this post?')) return;
 
     try {
-      await deleteDoc(doc(db, 'posts', postId));
+      await supabase.from('posts').delete().eq('id', postId);
       loadPosts();
     } catch (error) {
       console.error('Failed to delete post:', error);

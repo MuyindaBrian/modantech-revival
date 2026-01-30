@@ -22,7 +22,7 @@ const Portfolio = () => {
       category: "Mobile",
       description: "An iOS and Android app for tracking fitness activities, nutrition, and health metrics with personalized insights.",
       image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=2340&auto=format&fit=crop",
-      tags: ["React Native", "Firebase", "Charts"],
+      tags: ["React Native", "Supabase", "Charts"],
     },
     {
       id: 3,

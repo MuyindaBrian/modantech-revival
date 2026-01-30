@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs, doc, getDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { supabase } from '@/lib/supabase';
 
 export interface BlogPost {
   id: string;
@@ -22,16 +21,18 @@ export const useBlog = () => {
   useEffect(() => {
     const loadBlogPosts = async () => {
       try {
-        const postsRef = collection(db, 'posts');
-        const q = query(postsRef, orderBy('date', 'desc'));
-        const querySnapshot = await getDocs(q);
+        const { data, error } = await supabase
+          .from('posts')
+          .select('*')
+          .order('date', { ascending: false })
+          .eq('published', true);
 
-        const parsedPosts: BlogPost[] = querySnapshot.docs
-          .map(doc => ({
-            id: doc.id,
-            ...doc.data()
-          } as BlogPost))
-          .filter(post => post.published);
+        if (error) throw error;
+
+        const parsedPosts: BlogPost[] = (data || []).map((row: any) => ({
+          id: String(row.id),
+          ...row
+        })) as BlogPost[];
 
         setPosts(parsedPosts);
         setLoading(false);
@@ -49,18 +50,16 @@ export const useBlog = () => {
 
 export const getBlogPost = async (slug: string): Promise<BlogPost | null> => {
   try {
-    const postsRef = collection(db, 'posts');
-    const q = query(postsRef);
-    const querySnapshot = await getDocs(q);
+    const { data, error } = await supabase
+      .from('posts')
+      .select('*')
+      .eq('slug', slug)
+      .single();
 
-    const post = querySnapshot.docs
-      .map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      } as BlogPost))
-      .find(p => p.slug === slug);
+    if (error) throw error;
+    if (!data) return null;
 
-    return post || null;
+    return { id: String(data.id), ...data } as BlogPost;
   } catch (error) {
     console.error('Failed to load blog post:', error);
     return null;
