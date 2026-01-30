@@ -94,6 +94,34 @@ Migration steps (recommended):
 4. Create a storage bucket `blog-images` in the Supabase dashboard and set its public access as needed.
 
 Notes:
-- The SQL in `supabase/init.sql` creates the `posts` table, a sample post, and basic RLS policies so public visitors can read published posts while authenticated users can read and modify posts.
+- The SQL in `supabase/init.sql` creates the `posts` table, a sample post, a `profiles` table to store `is_admin` flags, and RLS policies so public visitors can read published posts while authenticated users can read and modify posts.
+- To promote a user to admin run (in SQL editor):
+
+```
+update public.profiles set is_admin = true where email = 'you@domain.com';
+```
+
 - After creating the project, set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in your hosting provider (Netlify, Vercel, etc.) or `.env` for local dev.
+
+---
+
+## CI migrations (GitHub Actions) ⚙️
+
+You can run Supabase migrations automatically via GitHub Actions. Steps:
+
+1. Create a **Personal Access Token** in Supabase (Dashboard -> Account -> Personal Access Tokens) and add it to your repository secrets as `SUPABASE_ACCESS_TOKEN`.
+2. Add your project ref (the subdomain prefix from your Supabase URL, e.g. `ggythvrukbudqilavpew`) as `SUPABASE_PROJECT_REF` in repository secrets.
+3. The repository includes a workflow that runs on `push` to `main` (when `supabase/**` changes) and can be run manually via `workflow_dispatch`.
+
+Secrets required:
+- `SUPABASE_ACCESS_TOKEN` — Personal Access Token (PAT) with project permissions
+- `SUPABASE_PROJECT_REF` — your project ref (subdomain)
+
+You can also run migrations locally in CI/debug with:
+
+```
+npm run supabase:migrate:ci
+```
+
+(Ensure `SUPABASE_PROJECT_REF` is set in environment when running this script.)
 

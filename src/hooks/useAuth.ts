@@ -4,15 +4,43 @@ import type { User } from '@supabase/supabase-js';
 
 export const useAuth = () => {
   const [user, setUser] = useState<User | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  const fetchProfile = async (userId?: string) => {
+    if (!userId) {
+      setIsAdmin(false);
+      return;
+    }
+    try {
+      const { data, error } = await supabase.from('profiles').select('is_admin').eq('id', userId).single();
+      if (error) {
+        setIsAdmin(false);
+      } else {
+        setIsAdmin(Boolean(data?.is_admin));
+      }
+    } catch (e) {
+      setIsAdmin(false);
+    }
+  };
 
   useEffect(() => {
-    (async () => {
+    const init = async () => {
+      setLoading(true);
       const { data } = await supabase.auth.getSession();
-      setUser(data?.session?.user ?? null);
-    })();
+      const currentUser = data?.session?.user ?? null;
+      setUser(currentUser);
+      await fetchProfile(currentUser?.id);
+      setLoading(false);
+    };
+
+    init();
 
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      const currentUser = session?.user ?? null;
+      setUser(currentUser);
+      fetchProfile(currentUser?.id);
+      setLoading(false);
     });
 
     return () => listener?.subscription?.unsubscribe?.();
@@ -38,7 +66,7 @@ export const useAuth = () => {
     if (error) throw error;
   };
 
-  return { user, signIn, signUp, signOut, resetPassword } as const;
+  return { user, isAdmin, loading, signIn, signUp, signOut, resetPassword } as const;
 };
 
 export default useAuth;

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import useAuth from '@/hooks/useAuth';
 import { supabase } from '@/lib/supabase';
-import type { User } from '@supabase/supabase-js';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,8 +15,7 @@ import { BlogPost } from '@/hooks/useBlog';
 
 const Admin = () => {
   const navigate = useNavigate();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
+  const { user, isAdmin, loading, signIn, signOut } = useAuth();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -35,27 +34,7 @@ const Admin = () => {
     published: false,
   });
 
-  useEffect(() => {
-    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
-      const currentUser = session?.user ?? null;
-      setUser(currentUser);
-      setLoading(false);
-      if (currentUser) {
-        loadPosts();
-      }
-    });
 
-    // check initial session
-    (async () => {
-      const { data } = await supabase.auth.getSession();
-      const currentUser = data?.session?.user ?? null;
-      setUser(currentUser);
-      setLoading(false);
-      if (currentUser) loadPosts();
-    })();
-
-    return () => listener?.subscription?.unsubscribe?.();
-  }, []);
 
   const loadPosts = async () => {
     try {
@@ -70,24 +49,28 @@ const Admin = () => {
     }
   };
 
+  useEffect(() => {
+    if (user && isAdmin) {
+      loadPosts();
+    } else {
+      setPosts([]);
+    }
+  }, [user, isAdmin]);
+
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
-      if (error) throw error;
-    } catch (error) {
-      console.error('Login failed:', error);
-      alert('Login failed. Please check your credentials.');
+      await signIn(email, password);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Login failed. Please check your credentials.';
+      alert(message);
     }
   };
 
   const handleLogout = async () => {
     try {
-      await supabase.auth.signOut();
+      await signOut();
       navigate('/');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -224,6 +207,21 @@ const Admin = () => {
     );
   }
 
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <CardTitle>Unauthorized</CardTitle>
+            <CardDescription>You do not have permission to access the admin panel.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate('/')}>Back to home</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b">
