@@ -1,7 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import sharp from 'sharp';
-import pngToIco from 'png-to-ico';
+import toIco from 'to-ico';
 
 const PUBLIC = path.join(process.cwd(), 'public');
 const SVG = path.join(PUBLIC, 'favicon.svg');
@@ -18,8 +18,8 @@ const OUT_ICO = path.join(PUBLIC, 'favicon.ico');
       pngBuffers.push(buf);
     }
 
-    const ico = await pngToIco(pngBuffers);
-    await fs.writeFile(OUT_ICO, ico);
+    const ico = await toIco(pngBuffers);
+    await fs.writeFile(OUT_ICO, Buffer.from(ico));
     console.log('favicon.ico generated at', OUT_ICO);
   } catch (err) {
     console.error('Failed to generate favicon.ico:', err);
