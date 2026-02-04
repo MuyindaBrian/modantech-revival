@@ -41,7 +41,14 @@ const BlogPostPage = () => {
         if (!error && updated?.views != null) setViews(updated.views);
       } catch (e) {
         console.error('Failed to update views via RPC', e);
-        setViews(null);
+        // Fallback to CountAPI if RPC isn't available
+        const ns = 'modantech_blog';
+        const key = slug;
+        fetch(`https://api.countapi.xyz/hit/${ns}/${key}`)
+          .then(() => fetch(`https://api.countapi.xyz/get/${ns}/${key}`))
+          .then(r => r.json())
+          .then(data => setViews(typeof data.value === 'number' ? data.value : null))
+          .catch(() => setViews(null));
       }
     })();
   }, [post]);
