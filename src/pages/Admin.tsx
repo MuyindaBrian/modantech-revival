@@ -226,13 +226,7 @@ const Admin = () => {
     <div className="min-h-screen bg-background">
       <div className="border-b">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center gap-4">
-            <h1 className="text-2xl font-bold">Blog CMS</h1>
-            <div className="text-sm text-muted-foreground flex items-center gap-2">
-              <span>{user?.email}</span>
-              <Badge variant="secondary">Admin</Badge>
-            </div>
-          </div>
+          <h1 className="text-2xl font-bold">Blog CMS</h1>
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="w-4 h-4 mr-2" />
             Logout
