@@ -8,7 +8,8 @@ const __dirname = path.dirname(__filename);
 
 const projectRoot = path.resolve(__dirname, '..');
 const contentDir = path.join(projectRoot, 'src', 'content', 'blog');
-const publicDir = path.join(projectRoot, 'public');
+// Write to dist/ so generated feeds are included in the deployed build (Netlify publishes dist/)
+const outputDir = path.join(projectRoot, 'dist');
 
 const SITE_URL = process.env.SITE_URL || 'https://example.com';
 
@@ -55,7 +56,7 @@ function generateSitemap(posts) {
 		}).join('') +
 		`\n</urlset>\n`;
 
-	fs.writeFileSync(path.join(publicDir, 'sitemap.xml'), xml, 'utf8');
+	fs.writeFileSync(path.join(outputDir, 'sitemap.xml'), xml, 'utf8');
 }
 
 function escapeXml(str) {
@@ -68,15 +69,15 @@ function generateRss(posts) {
 
 	const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<rss version="2.0">\n  <channel>\n    <title>ModanTech Blog</title>\n    <link>${SITE_URL}</link>\n    <description>Latest articles from ModanTech</description>\n    <lastBuildDate>${now}</lastBuildDate>${items}\n  </channel>\n</rss>\n`;
 
-	fs.writeFileSync(path.join(publicDir, 'rss.xml'), xml, 'utf8');
+	fs.writeFileSync(path.join(outputDir, 'rss.xml'), xml, 'utf8');
 }
 
 function main() {
-	if (!fs.existsSync(publicDir)) fs.mkdirSync(publicDir, { recursive: true });
+	if (!fs.existsSync(outputDir)) fs.mkdirSync(outputDir, { recursive: true });
 	const posts = readMarkdownPosts();
 	generateSitemap(posts);
 	generateRss(posts);
-	console.log(`Generated sitemap.xml and rss.xml for ${posts.length} posts at ${publicDir}`);
+	console.log(`Generated sitemap.xml and rss.xml for ${posts.length} posts at ${outputDir}`);
 }
 
 main();

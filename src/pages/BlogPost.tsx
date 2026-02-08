@@ -65,13 +65,15 @@ const BlogPostPage = () => {
 
   const readTime = useMemo(() => {
     if (!post) return 1;
-    const words = post.content.split(/\s+/).filter(Boolean).length;
+    const content = post.content ?? '';
+    const words = content.split(/\s+/).filter(Boolean).length;
     return Math.max(1, Math.round(words / 200));
   }, [post]);
 
   const headings = useMemo(() => {
     if (!post) return [] as { depth: number; text: string; id: string }[];
-    const lines = post.content.split('\n');
+    const content = post.content ?? '';
+    const lines = content.split('\n');
     const items: { depth: number; text: string; id: string }[] = [];
     const slugify = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-');
     for (const line of lines) {
@@ -254,7 +256,7 @@ const BlogPostPage = () => {
                 [rehypeAutolinkHeadings, { behavior: 'wrap' }],
               ]}
             >
-              {post.content}
+              {post.content ?? ''}
             </ReactMarkdown>
           </div>
 

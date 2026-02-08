@@ -20,6 +20,10 @@ export const useBlog = () => {
 
   useEffect(() => {
     const loadBlogPosts = async () => {
+      if (!supabase) {
+        setLoading(false);
+        return;
+      }
       try {
         const { data, error } = await supabase
           .from('posts')
@@ -49,6 +53,7 @@ export const useBlog = () => {
 };
 
 export const getBlogPost = async (slug: string): Promise<BlogPost | null> => {
+  if (!supabase) return null;
   try {
     const { data, error } = await supabase
       .from('posts')

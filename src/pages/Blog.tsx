@@ -16,7 +16,8 @@ const Blog = () => {
 
   const postsWithReadTime = useMemo(() => {
     return posts.map(p => {
-      const words = p.content.split(/\s+/).filter(Boolean).length;
+      const content = p.content ?? '';
+      const words = content.split(/\s+/).filter(Boolean).length;
       const minutes = Math.max(1, Math.round(words / 200));
       return { ...p, readTime: minutes } as typeof p & { readTime: number };
     });

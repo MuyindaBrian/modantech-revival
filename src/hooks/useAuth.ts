@@ -8,7 +8,7 @@ export const useAuth = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchProfile = async (userId?: string) => {
-    if (!userId) {
+    if (!userId || !supabase) {
       setIsAdmin(false);
       return;
     }
@@ -25,6 +25,10 @@ export const useAuth = () => {
   };
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     const init = async () => {
       setLoading(true);
       const { data } = await supabase.auth.getSession();
@@ -47,21 +51,25 @@ export const useAuth = () => {
   }, []);
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase) throw new Error('Supabase is not configured.');
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
   };
 
   const signUp = async (email: string, password: string) => {
+    if (!supabase) throw new Error('Supabase is not configured.');
     const { error } = await supabase.auth.signUp({ email, password });
     if (error) throw error;
   };
 
   const signOut = async () => {
+    if (!supabase) return;
     const { error } = await supabase.auth.signOut();
     if (error) throw error;
   };
 
   const resetPassword = async (email: string, options?: { redirectTo?: string }) => {
+    if (!supabase) throw new Error('Supabase is not configured.');
     const { error } = await supabase.auth.resetPasswordForEmail(email, options);
     if (error) throw error;
   };

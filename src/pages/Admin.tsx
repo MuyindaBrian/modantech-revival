@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '@/hooks/useAuth';
-import { supabase } from '@/lib/supabase';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -37,6 +37,7 @@ const Admin = () => {
 
 
   const loadPosts = async () => {
+    if (!supabase) return;
     try {
       const { data, error } = await supabase
         .from('posts')
@@ -79,7 +80,7 @@ const Admin = () => {
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file || !supabase?.storage) return;
 
     try {
       const filePath = `blog-images/${Date.now()}-${file.name}`;
@@ -108,6 +109,10 @@ const Admin = () => {
       date: new Date().toISOString(),
     };
 
+    if (!supabase) {
+      alert('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment.');
+      return;
+    }
     try {
       if (editingPost) {
         await supabase.from('posts').update(postData).eq('id', editingPost.id);
@@ -140,6 +145,7 @@ const Admin = () => {
 
   const handleDelete = async (postId: string) => {
     if (!confirm('Are you sure you want to delete this post?')) return;
+    if (!supabase) return;
 
     try {
       await supabase.from('posts').delete().eq('id', postId);
@@ -167,6 +173,24 @@ const Admin = () => {
 
   if (loading) {
     return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!isSupabaseConfigured) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <Card className="w-full max-w-md text-center">
+          <CardHeader>
+            <CardTitle>Backend not configured</CardTitle>
+            <CardDescription>
+              Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment (e.g. .env or hosting provider) to enable the admin panel and blog.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button onClick={() => navigate('/')}>Back to home</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   if (!user) {

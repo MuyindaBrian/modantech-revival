@@ -9,6 +9,7 @@
 
 [build.environment]
   NODE_VERSION = "18"
+  # Optional: set SITE_URL to your site URL (e.g. https://your-app.netlify.app) for sitemap.xml and rss.xml
 
 # Enable Netlify CMS
 [[headers]]
