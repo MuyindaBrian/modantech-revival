@@ -12,6 +12,7 @@ export interface BlogPost {
   tags: string[];
   content: string;
   published: boolean;
+  views?: number;
 }
 
 export const useBlog = () => {

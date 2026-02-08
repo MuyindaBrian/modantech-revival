@@ -31,16 +31,27 @@ const BlogPostPage = () => {
   }, [slug]);
 
   useEffect(() => {
-    if (!slug) return;
-    const ns = 'modantech_blog';
-    const key = slug;
-    // CountAPI: create/increment and then get value
-    fetch(`https://api.countapi.xyz/hit/${ns}/${key}`)
-      .then(() => fetch(`https://api.countapi.xyz/get/${ns}/${key}`))
-      .then(r => r.json())
-      .then(data => setViews(typeof data.value === 'number' ? data.value : null))
-      .catch(() => setViews(null));
-  }, [slug]);
+    if (!post) return;
+
+    // Increment views using server-side RPC and fetch updated count
+    (async () => {
+      try {
+        await supabase.rpc('increment_post_views', { p_uuid: post.id });
+        const { data: updated, error } = await supabase.from('posts').select('views').eq('id', post.id).single();
+        if (!error && updated?.views != null) setViews(updated.views);
+      } catch (e) {
+        console.error('Failed to update views via RPC', e);
+        // Fallback to CountAPI if RPC isn't available
+        const ns = 'modantech_blog';
+        const key = slug;
+        fetch(`https://api.countapi.xyz/hit/${ns}/${key}`)
+          .then(() => fetch(`https://api.countapi.xyz/get/${ns}/${key}`))
+          .then(r => r.json())
+          .then(data => setViews(typeof data.value === 'number' ? data.value : null))
+          .catch(() => setViews(null));
+      }
+    })();
+  }, [post]);
 
   const shareUrl = window.location.href;
   const shareTitle = post?.title || "";
