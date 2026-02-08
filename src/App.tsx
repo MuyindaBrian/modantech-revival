@@ -31,6 +31,12 @@ function AuthRecoveryListener() {
   useEffect(() => {
     if (!supabase) return;
 
+    // If we landed with recovery hash but index.html didn't redirect (e.g. client-side nav), go to reset page
+    if (window.location.hash.includes("type=recovery")) {
+      navigate("/reset-password" + window.location.hash, { replace: true });
+      return;
+    }
+
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event === "PASSWORD_RECOVERY") {
         navigate("/reset-password", { replace: true });

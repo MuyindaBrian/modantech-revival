@@ -17,6 +17,7 @@ const Footer = () => {
             <ul className="inline-flex flex-wrap items-center gap-4 text-sm text-background/80">
               <li><Link to="/" className="hover:text-white transition-colors">Home</Link></li>
               <li><Link to="/blog" className="hover:text-white transition-colors">Blog</Link></li>
+              <li><Link to="/admin" className="hover:text-white transition-colors">CMS</Link></li>
               <li><a href="/rss.xml" className="hover:text-white transition-colors">RSS</a></li>
               <li><a href="/sitemap.xml" className="hover:text-white transition-colors">Sitemap</a></li>
               <li><Link to="/contact" className="hover:text-white transition-colors">Contact</Link></li>

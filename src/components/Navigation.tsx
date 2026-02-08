@@ -1,6 +1,6 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, X, Sun, Moon, ChevronDown } from "lucide-react";
+import { Menu, X, Sun, Moon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Link } from "react-router-dom";
 import {
@@ -11,33 +11,31 @@ import {
   NavigationMenuList,
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
-import { useSettings } from "@/hooks/useSettings";
+import useAuth from "@/hooks/useAuth";
+
+function SignOutButton({ onAfterClick }: { onAfterClick?: () => void }) {
+  const { signOut } = useAuth();
+  const handleLogout = async () => {
+    try {
+      await signOut();
+      onAfterClick?.();
+      window.location.href = "/";
+    } catch {
+      onAfterClick?.();
+    }
+  };
+  return (
+    <Button variant="secondary" className="flex-1 md:flex-none px-4" onClick={handleLogout}>
+      Logout
+    </Button>
+  );
+}
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const { settings } = useSettings();
-
-  useEffect(() => {
-    const identity = (window as any).netlifyIdentity;
-    if (!identity) return;
-
-    const handleInit = (user: any) => setIsLoggedIn(!!user);
-    const handleLogin = () => setIsLoggedIn(true);
-    const handleLogout = () => setIsLoggedIn(false);
-
-    identity.on("init", handleInit);
-    identity.on("login", handleLogin);
-    identity.on("logout", handleLogout);
-    identity.init();
-
-    return () => {
-      identity.off("init", handleInit);
-      identity.off("login", handleLogin);
-      identity.off("logout", handleLogout);
-    };
-  }, []);
+  const { user, loading } = useAuth();
+  const isLoggedIn = !!user;
 
   const navItems = [
     { name: "Home", href: "/" },
@@ -158,25 +156,12 @@ const Navigation = () => {
             >
               {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            {isLoggedIn ? (
+            {!loading && isLoggedIn ? (
               <>
-                <a href="/admin" className="flex items-center gap-2 px-3 py-2 rounded-md border hover:bg-accent transition-colors">
-                  {settings?.avatar ? (
-                    <img src={settings.avatar} alt={settings.displayName} className="h-6 w-6 rounded-full object-cover" />
-                  ) : (
-                    <div className="h-6 w-6 rounded-full bg-primary text-white grid place-items-center text-xs font-semibold">
-                      {settings?.initials || 'AD'}
-                    </div>
-                  )}
-                  <span className="text-sm">{settings?.displayName || 'Admin'}</span>
-                </a>
-                <Button
-                  variant="secondary"
-                  className="px-4"
-                  onClick={() => (window as any).netlifyIdentity?.logout?.()}
-                >
-                  Logout
+                <Button variant="outline" className="px-4" asChild>
+                  <Link to="/admin">CMS / Admin</Link>
                 </Button>
+                <SignOutButton />
               </>
             ) : (
               <>
@@ -222,21 +207,12 @@ const Navigation = () => {
                 {item.name}
               </Link>
             ))}
-            {isLoggedIn ? (
+            {!loading && isLoggedIn ? (
               <div className="flex gap-2 mt-4">
                 <Button variant="outline" className="flex-1" asChild>
-                  <a href="/admin" onClick={() => setIsOpen(false)}>Admin</a>
+                  <Link to="/admin" onClick={() => setIsOpen(false)}>CMS / Admin</Link>
                 </Button>
-                <Button
-                  variant="secondary"
-                  className="flex-1"
-                  onClick={() => {
-                    (window as any).netlifyIdentity?.logout?.();
-                    setIsOpen(false);
-                  }}
-                >
-                  Logout
-                </Button>
+                <SignOutButton onAfterClick={() => setIsOpen(false)} />
               </div>
             ) : (
               <div className="flex gap-2 mt-4">

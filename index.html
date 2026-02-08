@@ -16,27 +16,14 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@modantech" />
     <meta name="twitter:image" content="/images/brand/og-social.svg" />
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
     <script>
+      // Supabase password recovery: land on set-password page with hash so React can complete the flow
       (function () {
-        // If arriving from an invite/confirmation link, send to /admin so the widget can finish signup
-        if (location.hash && (location.hash.includes('invite_token') || location.hash.includes('confirmation_token'))) {
-          // Preserve the hash so the Identity widget can complete signup/confirmation
-          location.href = '/admin/' + location.hash;
+        var hash = location.hash || '';
+        if (hash.includes('type=recovery')) {
+          location.replace('/reset-password' + hash);
           return;
         }
-        // After login, go to /admin
-        document.addEventListener('DOMContentLoaded', function () {
-          if (window.netlifyIdentity) {
-            window.netlifyIdentity.on('init', function (user) {
-              if (!user) {
-                window.netlifyIdentity.on('login', function () {
-                  document.location.href = '/admin/';
-                });
-              }
-            });
-          }
-        });
       })();
     </script>
   </head>
