@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -23,6 +23,15 @@ import NotFound from "./pages/NotFound";
 import WhatsAppFloat from "@/components/WhatsAppFloat";
 
 const queryClient = new QueryClient();
+
+/** Scroll to top when the route changes. */
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [pathname]);
+  return null;
+}
 
 /** Listens for Supabase PASSWORD_RECOVERY so we redirect to set-new-password instead of flashing and redirecting away. */
 function AuthRecoveryListener() {
@@ -59,6 +68,7 @@ const App = () => (
         <Sonner />
         <BrowserRouter>
           <>
+            <ScrollToTop />
             <AuthRecoveryListener />
             <Routes>
               <Route path="/" element={<Index />} />

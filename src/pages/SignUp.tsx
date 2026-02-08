@@ -12,21 +12,23 @@ const SignUp = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
   const { signUp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
     if (password !== confirmPassword) {
-      alert('Passwords do not match');
+      setError('Passwords do not match.');
       return;
     }
 
     try {
       await signUp(email, password);
       navigate('/admin');
-    } catch (error: any) {
-      alert(error.message || 'Signup failed.');
+    } catch {
+      setError('Something went wrong. Please try again.');
     }
   };
 
@@ -67,9 +69,9 @@ const SignUp = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="confirmPassword">Confirm Password</Label>
-                    <Input id="confirmPassword" type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
+                    <Input id="confirmPassword" type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value); setError(null); }} />
                   </div>
-
+                  {error && <p className="text-sm text-amber-600 dark:text-amber-400">{error}</p>}
                   <Button type="submit" className="w-full" variant="hero">Sign up</Button>
                 </form>
 

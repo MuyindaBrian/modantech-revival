@@ -10,26 +10,19 @@ import { isSupabaseConfigured } from "@/lib/supabase";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
   const { resetPassword } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setStatus("idle");
     try {
-      // No redirectTo: use Supabase Site URL (Authentication > URL Configuration).
-      // Your Site URL should be https://modantech.netlify.app so the email link lands there;
-      // index.html then redirects to /reset-password when it sees type=recovery in the hash.
-      await resetPassword(email);
-      alert('If that email exists, you will receive reset instructions shortly. Check your inbox and spam.');
-    } catch (error: unknown) {
-      const msg = error instanceof Error ? error.message : String(error);
-      const isNetworkError = /fetch|network|failed to fetch|cannot fetch/i.test(msg);
-      if (isNetworkError) {
-        alert(
-          'Network error sending reset email. Check that VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY are set in Netlify (Site settings → Environment variables) and that you redeployed after adding them.'
-        );
-      } else {
-        alert(msg || 'Failed to send reset email.');
-      }
+      await resetPassword(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+      setStatus("success");
+    } catch {
+      setStatus("error");
     }
   };
 
@@ -50,15 +43,20 @@ const ForgotPassword = () => {
               <CardContent className="space-y-4">
                 {!isSupabaseConfigured ? (
                   <p className="text-sm text-muted-foreground">
-                    Auth is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Netlify environment variables and redeploy.
+                    Auth is not configured.
                   </p>
                 ) : (
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-2">
                       <Label htmlFor="email">Email</Label>
-                      <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => setEmail(e.target.value)} />
+                      <Input id="email" type="email" placeholder="you@example.com" value={email} onChange={(e) => { setEmail(e.target.value); setStatus("idle"); }} />
                     </div>
-
+                    {status === "success" && (
+                      <p className="text-sm text-green-600 dark:text-green-400">Check your email for a reset link.</p>
+                    )}
+                    {status === "error" && (
+                      <p className="text-sm text-amber-600 dark:text-amber-400">Something went wrong. Please try again.</p>
+                    )}
                     <Button type="submit" className="w-full" variant="hero">Send reset email</Button>
                   </form>
                 )}

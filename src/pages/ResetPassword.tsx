@@ -12,22 +12,23 @@ const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [done, setDone] = useState(false);
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
 
   const handleReset = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!supabase || !password.trim()) return;
 
+    setError(false);
     setLoading(true);
-    const { error } = await supabase.auth.updateUser({ password: password.trim() });
+    const { error: err } = await supabase.auth.updateUser({ password: password.trim() });
     setLoading(false);
 
-    if (error) {
-      alert(error.message);
+    if (err) {
+      setError(true);
     } else {
       setDone(true);
-      alert("Password updated. You can now sign in.");
-      navigate("/signin", { replace: true });
+      setTimeout(() => navigate("/signin", { replace: true }), 1500);
     }
   };
 
@@ -80,6 +81,8 @@ const ResetPassword = () => {
                     />
                   </div>
 
+                  {done && <p className="text-sm text-green-600 dark:text-green-400">Password updated. Redirecting to sign in…</p>}
+                  {error && <p className="text-sm text-amber-600 dark:text-amber-400">Something went wrong. Please try again.</p>}
                   <Button
                     type="submit"
                     className="w-full"

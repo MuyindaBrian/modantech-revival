@@ -22,6 +22,10 @@ const Admin = () => {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginError, setLoginError] = useState(false);
+  const [uploadError, setUploadError] = useState(false);
+  const [saveError, setSaveError] = useState(false);
+  const [deleteError, setDeleteError] = useState(false);
 
   const [formData, setFormData] = useState({
     title: '',
@@ -61,11 +65,11 @@ const Admin = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginError(false);
     try {
       await signIn(email, password);
-    } catch (error: unknown) {
-      const message = error instanceof Error ? error.message : 'Login failed. Please check your credentials.';
-      alert(message);
+    } catch {
+      setLoginError(true);
     }
   };
 
@@ -88,9 +92,9 @@ const Admin = () => {
       if (uploadError) throw uploadError;
       const { data: publicUrlData } = supabase.storage.from('blog-images').getPublicUrl(filePath);
       setFormData({ ...formData, image: publicUrlData.publicUrl || '' });
-    } catch (error) {
-      console.error('Image upload failed:', error);
-      alert('Image upload failed. Please try again.');
+      setUploadError(false);
+    } catch {
+      setUploadError(true);
     }
   };
 
@@ -109,10 +113,8 @@ const Admin = () => {
       date: new Date().toISOString(),
     };
 
-    if (!supabase) {
-      alert('Supabase is not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to your environment.');
-      return;
-    }
+    if (!supabase) return;
+    setSaveError(false);
     try {
       if (editingPost) {
         await supabase.from('posts').update(postData).eq('id', editingPost.id);
@@ -122,9 +124,8 @@ const Admin = () => {
 
       resetForm();
       loadPosts();
-    } catch (error) {
-      console.error('Failed to save post:', error);
-      alert('Failed to save post. Please try again.');
+    } catch {
+      setSaveError(true);
     }
   };
 
@@ -146,13 +147,12 @@ const Admin = () => {
   const handleDelete = async (postId: string) => {
     if (!confirm('Are you sure you want to delete this post?')) return;
     if (!supabase) return;
-
+    setDeleteError(false);
     try {
       await supabase.from('posts').delete().eq('id', postId);
       loadPosts();
-    } catch (error) {
-      console.error('Failed to delete post:', error);
-      alert('Failed to delete post. Please try again.');
+    } catch {
+      setDeleteError(true);
     }
   };
 
@@ -209,7 +209,7 @@ const Admin = () => {
                   id="email"
                   type="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => { setEmail(e.target.value); setLoginError(false); }}
                   required
                 />
               </div>
@@ -219,10 +219,11 @@ const Admin = () => {
                   id="password"
                   type="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => { setPassword(e.target.value); setLoginError(false); }}
                   required
                 />
               </div>
+              {loginError && <p className="text-sm text-amber-600 dark:text-amber-400">Invalid credentials. Try again.</p>}
               <Button type="submit" className="w-full">Sign In</Button>
             </form>
           </CardContent>
@@ -268,12 +269,12 @@ const Admin = () => {
           <TabsContent value="posts" className="space-y-4">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-semibold">All Posts</h2>
-              <Button onClick={() => { resetForm(); setShowForm(true); }}>
+              <Button onClick={() => { resetForm(); setShowForm(true); setDeleteError(false); }}>
                 <Plus className="w-4 h-4 mr-2" />
                 New Post
               </Button>
             </div>
-
+            {deleteError && <p className="text-sm text-amber-600 dark:text-amber-400">Delete failed. Try again.</p>}
             <div className="grid gap-4">
               {posts.map(post => (
                 <Card key={post.id}>
@@ -394,6 +395,7 @@ const Admin = () => {
                     {formData.image && (
                       <img src={formData.image} alt="Preview" className="mt-2 h-32 object-cover rounded" />
                     )}
+                    {uploadError && <p className="text-sm text-amber-600 dark:text-amber-400 mt-2">Image upload failed. Try again.</p>}
                   </div>
 
                   <div>
@@ -417,6 +419,7 @@ const Admin = () => {
                     <Label htmlFor="published">Published</Label>
                   </div>
 
+                  {saveError && <p className="text-sm text-amber-600 dark:text-amber-400">Save failed. Try again.</p>}
                   <div className="flex gap-2">
                     <Button type="submit">{editingPost ? 'Update' : 'Create'} Post</Button>
                     {editingPost && (

@@ -11,16 +11,18 @@ import useAuth from '@/hooks/useAuth';
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
   const navigate = useNavigate();
   const { signIn } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(false);
     try {
       await signIn(email, password);
       navigate('/admin');
-    } catch (error: any) {
-      alert(error.message || 'Login failed.');
+    } catch {
+      setError(true);
     }
   };
 
@@ -42,13 +44,13 @@ const SignIn = () => {
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
+                    <Input id="email" type="email" placeholder="Enter your email" value={email} onChange={(e) => { setEmail(e.target.value); setError(false); }} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <Input id="password" type="password" placeholder="Enter your password" value={password} onChange={(e) => { setPassword(e.target.value); setError(false); }} />
                   </div>
-
+                  {error && <p className="text-sm text-amber-600 dark:text-amber-400">Invalid email or password. Please try again.</p>}
                   <Button type="submit" className="w-full" variant="hero">Sign in</Button>
                 </form>
 
